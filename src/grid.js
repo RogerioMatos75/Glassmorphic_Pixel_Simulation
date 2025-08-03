@@ -4,6 +4,7 @@ let _scene;
 let _voxelSizeX, _voxelSizeY, _voxelSizeZ;
 let _geometry, _material;
 let _boundingBox;
+let _voxelData = []; // Store the full voxel data
 
 export function initVoxelGrid(scene, boundingBox, resolution, voxelColor = 0x55aa55) {
     _scene = scene;
@@ -16,11 +17,18 @@ export function initVoxelGrid(scene, boundingBox, resolution, voxelColor = 0x55a
 
     _geometry = new THREE.BoxGeometry(_voxelSizeX, _voxelSizeY, _voxelSizeZ);
     _material = new THREE.MeshLambertMaterial({ color: voxelColor });
+
+    // Initialize _voxelData with empty arrays
+    _voxelData = Array.from({ length: resolution }, () =>
+        Array.from({ length: resolution }, () => Array(resolution).fill(0))
+    );
 }
 
 export function addVoxelSliceToScene(sliceData, sliceIndex, resolution) {
+    // Store the slice data in the global _voxelData
     for (let i = 0; i < resolution; i++) {
         for (let k = 0; k < resolution; k++) {
+            _voxelData[i][sliceIndex][k] = sliceData[i][k];
             if (sliceData[i][k] === 1) {
                 const voxel = new THREE.Mesh(_geometry, _material);
                 voxel.position.set(
@@ -36,7 +44,6 @@ export function addVoxelSliceToScene(sliceData, sliceIndex, resolution) {
 
 export function clearVoxelGrid() {
     if (_scene) {
-        // Remove all meshes that use our voxel material
         _scene.children.forEach(child => {
             if (child instanceof THREE.Mesh && child.material === _material) {
                 _scene.remove(child);
@@ -45,4 +52,13 @@ export function clearVoxelGrid() {
             }
         });
     }
+    _voxelData = []; // Clear voxel data on scene clear
+}
+
+export function getVoxelData() {
+    return _voxelData;
+}
+
+export function getVoxelDimensions() {
+    return { voxelSizeX: _voxelSizeX, voxelSizeY: _voxelSizeY, voxelSizeZ: _voxelSizeZ, boundingBox: _boundingBox };
 }
