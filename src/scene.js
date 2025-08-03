@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
+let directionalLight;
+
 export function setupScene() {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xbfd1e5);
@@ -15,9 +17,9 @@ export function setupScene() {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
 
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(10, 20, 10);
-    scene.add(light);
+    directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(10, 20, 10);
+    scene.add(directionalLight);
     scene.add(new THREE.AmbientLight(0x404040));
 
     window.addEventListener('resize', () => {
@@ -48,4 +50,10 @@ export function adjustCameraToModel(camera, boundingBox) {
     // Adjust far plane based on new distance
     camera.far = cameraZ * 2;
     camera.updateProjectionMatrix();
+}
+
+export function setDirectionalLightIntensity(intensity) {
+    if (directionalLight) {
+        directionalLight.intensity = intensity;
+    }
 }

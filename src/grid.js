@@ -5,7 +5,7 @@ let _voxelSizeX, _voxelSizeY, _voxelSizeZ;
 let _geometry, _material;
 let _boundingBox;
 
-export function initVoxelGrid(scene, boundingBox, resolution) {
+export function initVoxelGrid(scene, boundingBox, resolution, voxelColor = 0x55aa55) {
     _scene = scene;
     _boundingBox = boundingBox;
 
@@ -15,7 +15,7 @@ export function initVoxelGrid(scene, boundingBox, resolution) {
     _voxelSizeZ = size.z / resolution;
 
     _geometry = new THREE.BoxGeometry(_voxelSizeX, _voxelSizeY, _voxelSizeZ);
-    _material = new THREE.MeshLambertMaterial({ color: 0x55aa55 });
+    _material = new THREE.MeshLambertMaterial({ color: voxelColor });
 }
 
 export function addVoxelSliceToScene(sliceData, sliceIndex, resolution) {
@@ -31,5 +31,18 @@ export function addVoxelSliceToScene(sliceData, sliceIndex, resolution) {
                 _scene.add(voxel);
             }
         }
+    }
+}
+
+export function clearVoxelGrid() {
+    if (_scene) {
+        // Remove all meshes that use our voxel material
+        _scene.children.forEach(child => {
+            if (child instanceof THREE.Mesh && child.material === _material) {
+                _scene.remove(child);
+                child.geometry.dispose();
+                child.material.dispose();
+            }
+        });
     }
 }

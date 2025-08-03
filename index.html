@@ -6,9 +6,18 @@
   <style>
     body { margin: 0; overflow: hidden; }
     canvas { display: block; }
+    #controls { position: absolute; top: 10px; left: 10px; background: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 5px; }
   </style>
 </head>
 <body>
+  <div id="controls">
+    <button id="clearSceneButton">Limpar Cena</button>
+    <div>
+      <label for="sliceDelaySlider">Velocidade de Impressão:</label>
+      <input type="range" id="sliceDelaySlider" min="10" max="500" value="200">
+      <span id="sliceDelayValue">200ms</span>
+    </div>
+  </div>
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>
